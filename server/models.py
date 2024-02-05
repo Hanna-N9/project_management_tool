@@ -114,14 +114,6 @@ class Project(db.Model, SerializerMixin):
             raise ValueError("Description must be shorter than 500 characters.")
         return description
 
-    @validates('start_date', 'end_date')
-    def validate_date(self, key, date):
-        if not isinstance(date, datetime):
-            raise ValueError(f"{key} must be a datetime object.")
-        if date < datetime.utcnow():
-            raise ValueError(f"{key} must not be in the past.")
-        return date
-
     @validates('status')
     def validate_status(self, key, status):
         valid_statuses = ["Not Started", "In Progress", "Completed"]
@@ -148,8 +140,8 @@ class Task(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
 
     # Relationships
-    project = db.relationship("Project", back_populates="tasks", cascade="all, delete-orphan")
-    comments = db.relationship("Comment", back_populates="task", cascade="all, delete-orphan")
+    project = db.relationship("Project", back_populates="tasks")
+    comments = db.relationship("Comment", back_populates="task")
 
     # Serialization rules
     serialize_rules = ("-project_id", "comments")
@@ -164,14 +156,6 @@ class Task(db.Model, SerializerMixin):
         if len(description) > 500:
             raise ValueError("Description must be shorter than 500 characters.")
         return description
-
-    @validates('due_date')
-    def validate_due_date(self, key, due_date):
-        if not isinstance(due_date, date):
-            raise ValueError(f"{key} must be a date object.")
-        if due_date < date.today():
-            raise ValueError(f"{key} must not be in the past.")
-        return due_date
 
     @validates('priority')
     def validate_priority(self, key, priority):
@@ -202,8 +186,8 @@ class Comment(db.Model, SerializerMixin):
     task_id = db.Column(db.Integer, db.ForeignKey("tasks.id"))
 
     # Relationships
-    user = db.relationship("User", back_populates="comments", cascade="all, delete-orphan")
-    task = db.relationship("Task", back_populates="comments", cascade="all, delete-orphan")
+    user = db.relationship("User", back_populates="comments")
+    task = db.relationship("Task", back_populates="comments")
 
     # Serialization rules
     serialize_rules = ("-user_id", "-task_id")
