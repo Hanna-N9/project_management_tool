@@ -11,7 +11,7 @@ from models import User, Project, Task, Comment
 
 @app.route("/")
 def index():
-    return "<h1>Project Management Tools</h1>"
+    return "<h1>ProjectHub</h1>"
 
 
                             ################################# User Authentication #################################
@@ -310,6 +310,23 @@ class CommentId(Resource):
             return make_response({"message": "Comment deleted successfully."}, 204)  
         
         
+                                        ################################# User_Project #################################
+
+
+class UserProjects(Resource):
+    def get(self):
+        user = User.query.first() 
+        return [project.title for project in user.projects]  # print the titles of all projects associated with this user
+
+class ProjectUsers(Resource):
+    def get(self):
+        project = Project.query.first()  
+        return [user.username for user in project.users]  # print the usernames of all users associated with this project
+
+        
+
+        
+        
 api.add_resource(Signup, "/sign_up")
 api.add_resource(SignIn, "/signIn")
 api.add_resource(SignOut, "/signOut")
@@ -322,6 +339,8 @@ api.add_resource(Tasks, "/tasks")
 api.add_resource(TaskId, "/tasks/<int:id>")
 api.add_resource(Comments, "/comments")
 api.add_resource(CommentId, "/comments/<int:id>")
+api.add_resource(UserProjects, "/user_projects")
+api.add_resource(ProjectUsers, "/project_users")
 
 
 if __name__ == "__main__":
