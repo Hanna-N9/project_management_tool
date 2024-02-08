@@ -41,14 +41,14 @@ export default function Login() {
         placeholder="Username"
         value={credentials.username}
         onChange={handleLoginChange}
-        name="username" // Ensure the name attribute matches the state property
+        name="username"
       />
       <input
         type="password"
         placeholder="Password"
         value={credentials.password}
         onChange={handleLoginChange}
-        name="password" // Ensure the name attribute matches the state property
+        name="password"
       />
       <button type="submit">Login</button>
     </form>
