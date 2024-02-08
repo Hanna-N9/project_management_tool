@@ -1,13 +1,11 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./AuthContext";
-import "../App.css";
 
 import HomePage from "./Homepage";
 import Dashboard from "./Dashboard";
 import Login from "./Login";
 import SignUp from "./SignUp";
 import Logout from "./Logout";
-import DashboardPage from "./Dashboard";
 import ProjectDetailPage from "./ProjectDetail";
 import NavBar from "./NavBar";
 import AdminPage from "./AdminPage";
@@ -32,7 +30,6 @@ export default function App() {
           <Route path="/logout" element={<Logout />} />
           <Route path="/sign_up" element={<SignUp />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard-page" element={<DashboardPage />} />
           <Route path="/project/:id" element={<ProjectDetailPage />} />
           <Route path="/user" element={<UserProfile />} />
           <Route path="/admin" element={<AdminPage />} />
@@ -46,8 +43,7 @@ export default function App() {
             path="/redirect-page"
             element={<Navigate to="/error-page" replace />}
           />
-          <Route path="*" element={<Navigate to="/" />} />{" "}
-          {/* Catch-all route for  404 */}
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </AuthProvider>
     </div>
