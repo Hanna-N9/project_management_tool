@@ -5,8 +5,7 @@ from sqlalchemy.orm import validates
 from datetime import datetime
 
 # Local imports
-
-from config import db, bcrypt
+from config import *
 
 
 # A many-to-many relationship between the User and Project models through the user_project_association table
@@ -67,6 +66,7 @@ class User(db.Model, SerializerMixin):
     #uses bcrypt to compare the provided password with the stored hash   
     def authenticate(self, password):
         return bcrypt.check_password_hash(self._password_hash, password.encode('utf-8'))
+    
 
     def __repr__(self):
         return f"User {self.username}"
@@ -91,7 +91,7 @@ class Project(db.Model, SerializerMixin):
     
     
     # Serialization rules
-    serialize_rules = ("-user_id", "tasks")
+    serialize_rules = ("-user_id", "-tasks")
     
      # Validation
     @validates('title')
@@ -144,7 +144,7 @@ class Task(db.Model, SerializerMixin):
     comments = db.relationship("Comment", back_populates="task")
 
     # Serialization rules
-    serialize_rules = ("-project_id", "comments")
+    serialize_rules = ("-project_id", "-user_id", "-comments")
 
 
     @validates('description')
