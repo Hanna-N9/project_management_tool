@@ -1,10 +1,19 @@
+#!/usr/bin/env python3
+
 # Remote library imports
 from flask import Flask, request, make_response, session, jsonify
 from flask_restful import Resource, Api
 from datetime import datetime
+from os import environ
+from dotenv import load_dotenv
 
 # Local imports
 from config import app, db, api
+
+# Secret Key
+load_dotenv(".env")
+app.secret_key = environ.get("SECRET_KEY")
+
 
 # Import Models 
 from models import User, Project, Task, Comment
@@ -33,18 +42,20 @@ class Signup(Resource):
         except ValueError as e:
             return make_response({"error": f"{e}"}, 400)
         
-
+        
 class SignIn(Resource):
     def post(self):
-        username = request.get_json()["username"]
-        password = request.get_json()["password"]
+        data = request.get_json()
+        username = data.get("username")
+        password = data.get("password")
 
         user = User.query.filter_by(username=username).first()
         if user and user.authenticate(password):
             session["user_id"] = user.id
             return user.to_dict(), 200
         session.clear()
-        return {"error": "Incorrect username or password"}, 401
+        return {"error": "Incorrect username or password"},  401
+
 
 
 class SignOut(Resource):
@@ -328,7 +339,7 @@ class ProjectUsers(Resource):
         
         
 api.add_resource(Signup, "/sign_up")
-api.add_resource(SignIn, "/signIn")
+api.add_resource(SignIn, "/login")
 api.add_resource(SignOut, "/signOut")
 api.add_resource(CheckSession, "/check_session")
 api.add_resource(UserResource, "/user")
