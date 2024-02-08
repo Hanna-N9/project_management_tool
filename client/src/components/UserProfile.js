@@ -1,24 +1,26 @@
-import React, { useState, useEffect, useContext } from "react"; // Add useContext to the import statement
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import axios from "axios";
 
 function UserProfile() {
-  const { isAuthenticated, user, setCurrentUser } = useContext(AuthContext); // Now useContext is defined
-  const [hasFetchedUser, setHasFetchedUser] = useState(false); // State to track if user has been fetched
+  const { isAuthenticated, user, setCurrentUser, setIsAuthenticated } =
+    useContext(AuthContext);
 
-  useEffect(() => {
-    if (isAuthenticated && !hasFetchedUser) {
-      axios
-        .get("/user")
-        .then(response => {
-          setCurrentUser(response.data); // Update user in the AuthContext
-          setHasFetchedUser(true); // Update state to indicate user has been fetched
-        })
-        .catch(error => {
-          console.error("Error fetching current user:", error);
-        });
-    }
-  }, [isAuthenticated, setCurrentUser, hasFetchedUser]); // dependency array
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    axios
+      .delete("/signOut")
+      .then(() => {
+        setIsAuthenticated(false);
+        setCurrentUser(null); // Clear user data from the context
+        navigate("/"); // Redirect to the home page
+      })
+      .catch(error => {
+        console.error("Error during logout:", error);
+      });
+  };
 
   if (!isAuthenticated || !user.username) {
     return <p>Please log in to view your profile.</p>;
@@ -29,6 +31,7 @@ function UserProfile() {
       <h1>User Profile</h1>
       <p>Username: {user.username}</p>
       <p>Email: {user.email}</p>
+      <button onClick={handleLogout}>Logout</button>
     </div>
   );
 }
