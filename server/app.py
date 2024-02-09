@@ -94,46 +94,40 @@ class UsersById(Resource):
     
                               ################################# Project #################################
                               
-    
 class Projects(Resource):
     def get(self):
-        projects = [project.to_dict() for project in Project.query.all()]
+        # Retrieve the user ID from the session
+        user_id = session.get("user_id")
+        # Query projects associated with the user
+        projects = Project.query.filter_by(user_id=user_id).all()
         if not projects:
-            return make_response({"error": "No projects found."}, 404)
-        return make_response(jsonify(projects), 200)
-    
-    
+            return make_response({"error": "No projects found."},  404)
+        return make_response(jsonify([project.to_dict() for project in projects]),  200)
+
+        
     def post(self):
         try:
             data = request.get_json()
-
-            start_date = data.get("startDate")
-            end_date = data.get("endDate")
-
-            if start_date is None or end_date is None:
-                return make_response({"error": "Missing start_date or end_date."}, 400)
-
-            # Checked if the user exists by using the user ID from the session
+            
+            # Ensure the user is logged in before creating a project
             user = User.query.get(session.get("user_id"))
-            if user is None:
-                return make_response({"error": "User not found."}, 404)
+            if not user:
+                return make_response({"error": "User not found."},  404)
 
             new_project = Project(
-                user_id=data.get("user_id"),
+                user_id=user.id,
                 title=data.get("title"),               
                 description=data.get("description"),
                 status=data.get("status"),
-                start_date=datetime.strptime(start_date, "%Y-%m-%d"),
-                end_date=datetime.strptime(end_date, "%Y-%m-%d"),
             )
             db.session.add(new_project)
             db.session.commit()
-            return make_response(new_project.to_dict(), 201)
+            return make_response(new_project.to_dict(),  201)
         except ValueError as e:
-            return make_response({"error": e.__str__()}, 400)
+            return make_response({"error": e.__str__()},  400)
         except KeyError:
-            return make_response({"error": "Missing required data."}, 400)
-        
+            return make_response({"error": "Missing required data."},  400)
+     
         
 class ProjectId(Resource):
     def get(self, id):
@@ -177,20 +171,18 @@ class ProjectId(Resource):
         
 class Tasks(Resource):
     def get(self):
-        tasks = [task.to_dict() for task in Task.query.all()]
+        # Retrieve the user ID from the session
+        user_id = session.get("user_id")
+        # Query tasks associated with the user
+        tasks = Task.query.filter_by(user_id=user_id).all()
         if not tasks:
-            return make_response({"error": "No tasks found."}, 404)
-        return make_response(jsonify(tasks), 200)
+            return make_response({"error": "No tasks found."},  404)
+        return make_response(jsonify([task.to_dict() for task in tasks]),  200)
  
      
     def post(self):
         try:
             data = request.get_json()
-            
-            due_date = data.get("dueDate")
-
-            if due_date is None:
-                return make_response({"error": "Missing due date."}, 400)
             
             # Checked if the user exists by using the user ID from the session
             user = User.query.get(session.get("user_id"))
@@ -200,7 +192,6 @@ class Tasks(Resource):
             new_task = Task(
                 user_id=data.get("user_id"),
                 description=data.get("description"),
-                due_date=datetime.strptime( due_date, "%Y-%m-%d"),
                 priority=data.get("priority"),
                 status=data.get("status"),
             )
@@ -228,7 +219,6 @@ class TaskId(Resource):
             return make_response({"error": "Task not found."}, 404)
         else:
             data = request.get_json()
-            data["due_date"] = datetime.strptime(data["due_date"], "%Y-%m-%d")
             try:
                 for attr, value in data.items():
                     if hasattr(task, attr):
@@ -257,10 +247,13 @@ class TaskId(Resource):
 
 class Comments(Resource):
     def get(self):
-        comments = [comment.to_dict() for comment in Comment.query.all()]
+        # Retrieve the user ID from the session
+        user_id = session.get("user_id")
+        # Query comments associated with the user
+        comments = Comment.query.filter_by(user_id=user_id).all()
         if not comments:
-            return make_response({"error": "No comments found."}, 404)
-        return make_response(jsonify(comments), 200)
+            return make_response({"error": "No comments found."},  404)
+        return make_response(jsonify([comment.to_dict() for comment in comments]),  200)
     
  
     def post(self):
