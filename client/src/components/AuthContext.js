@@ -1,6 +1,9 @@
-import React, { createContext, useState } from "react";
+import { createContext, useState } from "react";
 
-const AuthContext = createContext();
+const AuthContext = createContext({
+  isAuthenticated: false,
+  user: null,
+});
 
 const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
