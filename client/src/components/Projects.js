@@ -14,27 +14,30 @@ export default function Projects() {
       .catch(error => console.error(error));
   }, []);
 
-  const handleNewProject = newProject => {
+  function handleNewProject(newProject) {
     setProjects([...projects, newProject]);
-  };
+  }
 
-  const handleDeleteProject = projectId => {
+  function handleDeleteProject(id) {
     axios
-      .delete(`/projects/${projectId}`)
-      .then(res => {
-        // Refresh the projects list after deletion
-        axios.get("/projects").then(response => setProjects(response.data));
+      .delete(`/projects/${id}`)
+      .then(response => {
+        if (response.status !== 200 && response.status !== 204) {
+          throw new Error("Network response was not ok");
+        }
+        // Filter out the deleted project from the local state
+        setProjects(projects.filter(project => project.id !== id));
       })
       .catch(error => console.error(error));
-  };
+  }
 
-  const handleProjectUpdate = updatedProject => {
+  function handleProjectUpdate(updatedProject) {
     setProjects(
       projects.map(project =>
         project.id === updatedProject.id ? updatedProject : project,
       ),
     );
-  };
+  }
 
   const handleEditProject = projectId => {
     setEditingProjectId(projectId);
