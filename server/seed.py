@@ -28,7 +28,6 @@ def seed_database():
             users.append(user)
         db.session.commit()
         
-        
         print("Seeding projects...")
 
         projects = []
@@ -36,16 +35,20 @@ def seed_database():
             project = Project(
                 title=fake.sentence(),
                 description=fake.paragraph(),
-                start_date=fake.date_this_decade(),
-                end_date=fake.date_between(start_date='+1m', end_date='+6m'),
                 status=rc(['Not Started', 'In Progress', 'Completed']),
             )
             db.session.add(project)
             db.session.commit()  # Commit the project instance to the database
             projects.append(project)
-            # Add the association
-            ins = user_project_association.insert().values(user_id=rc(range(1, len(users) +   1)), project_id=project.id)
-            db.session.execute(ins)
+
+        # Add the association
+        for user in users:
+            for project in projects:
+                # Check if the association already exists
+                existing_association = db.session.query(user_project_association).filter_by(user_id=user.id, project_id=project.id).first()
+                if not existing_association:
+                    ins = user_project_association.insert().values(user_id=user.id, project_id=project.id)
+                    db.session.execute(ins)
         db.session.commit()
         
         print("Seeding tasks...")
@@ -55,7 +58,6 @@ def seed_database():
             for i in range(5):
                 task = Task(
                     description=fake.sentence(),
-                    due_date=fake.date_between(start_date='today', end_date='+2m'),
                     priority=rc(['High', 'Medium', 'Low']),
                     status=rc(['Not Started', 'In Progress', 'Completed']),
                     project_id=project.id,
