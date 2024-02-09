@@ -1,8 +1,8 @@
-import React, { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { AuthContext } from "./AuthContext";
 
-function Dashboard() {
+export default function Dashboard() {
   const { isAuthenticated } = useContext(AuthContext);
   const [projects, setProjects] = useState([]);
 
@@ -34,5 +34,3 @@ function Dashboard() {
     </div>
   );
 }
-
-export default Dashboard;
