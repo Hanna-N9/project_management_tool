@@ -79,8 +79,6 @@ class Project(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False) # A brief description of the project
-    start_date = db.Column(db.DateTime, nullable=False) # The date when the project starts
-    end_date = db.Column(db.DateTime, nullable=False) # The date when the project ends
     status = db.Column(db.String, nullable=False) # Current status of the project - like "Not Started", "In Progress", "Completed"
 
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
@@ -132,7 +130,6 @@ class Task(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String, nullable=False) # A brief description of the task, user stories --- smaller unit of work from project
-    due_date = db.Column(db.Date, nullable=False) # When the task is due
     priority = db.Column(db.String, nullable=False) # priority level of the task - like "High", "Medium", "Low"
     status = db.Column(db.String, nullable=False) # Current status of the task - like "Not Started", "In Progress", "Completed"
     
