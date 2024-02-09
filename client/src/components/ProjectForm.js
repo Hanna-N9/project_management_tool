@@ -15,6 +15,10 @@ export default function ProjectForm({ onCreate }) {
       .post("/projects", data)
       .then(response => {
         onCreate(response.data);
+        // Clear the form inputs after successful submission
+        setTitle("");
+        setDescription("");
+        setStatus("Not Started");
       })
       .catch(error => console.error(error));
   };
