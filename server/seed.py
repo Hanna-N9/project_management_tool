@@ -38,7 +38,7 @@ def seed_database():
                 status=rc(['Not Started', 'In Progress', 'Completed']),
             )
             db.session.add(project)
-            db.session.commit()  # Commit the project instance to the database
+            db.session.commit()  
             projects.append(project)
 
         # Add the association
@@ -57,7 +57,8 @@ def seed_database():
         for project in projects:
             for i in range(5):
                 task = Task(
-                    description=fake.sentence(),
+                    title=fake.sentence(),
+                    description=fake.paragraph(),
                     priority=rc(['High', 'Medium', 'Low']),
                     status=rc(['Not Started', 'In Progress', 'Completed']),
                     project_id=project.id,

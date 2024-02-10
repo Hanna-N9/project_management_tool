@@ -179,31 +179,31 @@ class Tasks(Resource):
             return make_response({"error": "No tasks found."},  404)
         return make_response(jsonify([task.to_dict() for task in tasks]),  200)
  
-     
+        
     def post(self):
         try:
             data = request.get_json()
             
-            # Checked if the user exists by using the user ID from the session
+            # Check if the user exists by using the user ID from the session
             user = User.query.get(session.get("user_id"))
-            if user is None:
-                return make_response({"error": "User not found."}, 404)
+            if not user:
+                return make_response({"error": "User not found."},  404)
 
             new_task = Task(
-                user_id=data.get("user_id"),
+                user_id=user.id,
+                title=data.get("title"),               
                 description=data.get("description"),
                 priority=data.get("priority"),
                 status=data.get("status"),
             )
             db.session.add(new_task)
             db.session.commit()
-            return make_response(new_task.to_dict(), 201)
+            return make_response(new_task.to_dict(),  201)
         except ValueError as e:
-            return make_response({"error": e.__str__()}, 400)
+            return make_response({"error": e.__str__()},  400)
         except KeyError:
-            return make_response({"error": "Missing required data."}, 400)
-        
-        
+            return make_response({"error": "Missing required data."},  400)
+    
 
 class TaskId(Resource):
     def get(self, id):
@@ -261,13 +261,13 @@ class Comments(Resource):
             data = request.get_json()
             user = User.query.get(session.get("user_id"))
             
-            # Checked if the user exists by using the user ID from the session
+            # Check if the user exists by using the user ID from the session
             if user is None:
                 return make_response({"error": "User not found."}, 404)
             
             new_comment = Comment(
-                user_id=data.get("user_id"),
-                task_id=data.get("task_id"),
+                user_id=user_id,
+                task_id=task_id,
                 text=data.get("text"),
             )
             db.session.add(new_comment)

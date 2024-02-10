@@ -129,6 +129,7 @@ class Task(db.Model, SerializerMixin):
     __tablename__ = "tasks"
 
     id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False) # A brief description of the task, user stories --- smaller unit of work from project
     priority = db.Column(db.String, nullable=False) # priority level of the task - like "High", "Medium", "Low"
     status = db.Column(db.String, nullable=False) # Current status of the task - like "Not Started", "In Progress", "Completed"
@@ -144,6 +145,17 @@ class Task(db.Model, SerializerMixin):
     serialize_rules = ("-project_id", "-user_id", "-comments")
 
 
+    # Validation
+    @validates('title')
+    def validate_title(self, key, title):
+        if not isinstance(title, str):
+            raise ValueError(f"{key} must be a string.")
+        if not title or len(title) < 1:
+            raise ValueError("Project must have a title.")
+        if len(title) > 100:
+            raise ValueError("Title must be shorter than 100 characters.")
+        return title
+    
     @validates('description')
     def validate_description(self, key, description):
         if not isinstance(description, str):
@@ -170,7 +182,7 @@ class Task(db.Model, SerializerMixin):
     
     
     def __repr__(self):
-        return f"Task #{self.id} | User #{self.user_id}"
+        return f"Task #{self.id} : {self.title}"
     
     
 class Comment(db.Model, SerializerMixin):
