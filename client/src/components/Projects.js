@@ -22,13 +22,16 @@ export default function Projects() {
     axios
       .delete(`/projects/${id}`)
       .then(response => {
-        if (response.status !== 200 && response.status !== 204) {
-          throw new Error("Network response was not ok");
+        if (response.status === 204) {
+          // Filter out the deleted project from the local state
+          setProjects(projects.filter(project => project.id !== id));
+        } else {
+          throw new Error("Unexpected response status");
         }
-        // Filter out the deleted project from the local state
-        setProjects(projects.filter(project => project.id !== id));
       })
-      .catch(error => console.error(error));
+      .catch(error => {
+        console.error(error);
+      });
   }
 
   function handleProjectUpdate(updatedProject) {
