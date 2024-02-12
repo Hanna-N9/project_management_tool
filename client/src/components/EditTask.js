@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 
 export default function EditTask({
@@ -9,17 +9,17 @@ export default function EditTask({
 }) {
   const [task, setTask] = useState(
     initialValues || {
-      user_id: "",
+      title: "",
       description: "",
       priority: "High",
       status: "Not Started",
     },
   );
 
-  const handleChange = event => {
+  const handleChange = e => {
     setTask({
       ...task,
-      [event.target.name]: event.target.value,
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -29,8 +29,8 @@ export default function EditTask({
     }
   };
 
-  const handleSubmit = event => {
-    event.preventDefault();
+  const handleSubmit = e => {
+    e.preventDefault();
     axios
       .patch(`/tasks/${taskId}`, task)
       .then(response => {
@@ -43,41 +43,30 @@ export default function EditTask({
 
   return (
     <form onSubmit={handleSubmit}>
-      <label htmlFor="user_id">User ID:</label>
       <input
         type="text"
-        id="user_id"
-        name="user_id"
-        value={task.user_id}
+        name="title"
+        value={task.title}
         onChange={handleChange}
+        placeholder="Title"
       />
 
-      <label htmlFor="description">Description:</label>
-      <input
-        type="text"
-        id="description"
+      <textarea
         name="description"
         value={task.description}
         onChange={handleChange}
+        placeholder="Description"
       />
 
       <label htmlFor="priority">Priority:</label>
-      <select
-        id="priority"
-        name="priority"
-        value={task.priority}
-        onChange={handleChange}>
+      <select name="priority" value={task.priority} onChange={handleChange}>
         <option value="High">High</option>
         <option value="Medium">Medium</option>
         <option value="Low">Low</option>
       </select>
 
       <label htmlFor="status">Status:</label>
-      <select
-        id="status"
-        name="status"
-        value={task.status}
-        onChange={handleChange}>
+      <select name="status" value={task.status} onChange={handleChange}>
         <option value="Not Started">Not Started</option>
         <option value="In Progress">In Progress</option>
         <option value="Completed">Completed</option>
