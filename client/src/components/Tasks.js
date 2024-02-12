@@ -1,18 +1,26 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { AuthContext } from "./AuthContext";
 import axios from "axios";
 import TaskForm from "./TaskForm";
 import EditTask from "./EditTask";
 
 export default function Tasks() {
+  const { isAuthenticated } = useContext(AuthContext);
   const [tasks, setTasks] = useState([]);
   const [editingTaskId, setEditingTaskId] = useState(null);
 
   useEffect(() => {
-    axios
-      .get("/tasks")
-      .then(response => setTasks(response.data))
-      .catch(error => console.error(error));
-  }, []);
+    if (isAuthenticated) {
+      axios
+        .get("/tasks")
+        .then(response => setTasks(response.data))
+        .catch(error => console.error(error));
+    }
+  }, [isAuthenticated]);
+
+  if (!isAuthenticated) {
+    return <p>Please log in to view tasks.</p>;
+  }
 
   function handleNewTask(newTask) {
     setTasks([...tasks, newTask]);
@@ -51,18 +59,36 @@ export default function Tasks() {
     <div>
       {tasks.map(task => (
         <div key={task.id}>
+          <h3>Project: {task.project ? task.project.title : ""}</h3>
           {editingTaskId === task.id ? (
-            <EditTask
-              taskId={task.id}
-              initialValues={task}
-              onUpdate={handleTaskUpdate}
-              onCancel={handleStopEditing}
-            />
-          ) : (
             <>
               <h3>{task.title}</h3>
               <p>{task.description}</p>
-              <p>{task.status}</p>
+              <b>Priority:</b> {task.priority}
+              <p>
+                <b>Status:</b> {task.status}
+              </p>
+              <EditTask
+                taskId={task.id}
+                initialValues={task}
+                onUpdate={handleTaskUpdate}
+                onCancel={handleStopEditing}
+              />
+            </>
+          ) : (
+            <>
+              <p>
+                <b>Title:</b> {task.title}
+              </p>
+              <p>
+                <b>Description:</b> {task.description}
+              </p>
+              <p>
+                <b>Priority:</b> {task.priority}
+              </p>
+              <p>
+                <b>Status:</b> {task.status}
+              </p>
               <button onClick={() => handleEditTask(task.id)}>Edit</button>
               <button onClick={() => handleDeleteTask(task.id)}>Delete</button>
             </>

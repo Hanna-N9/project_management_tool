@@ -1,18 +1,26 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { AuthContext } from "./AuthContext";
 import axios from "axios";
 import ProjectForm from "./ProjectForm";
 import EditProject from "./EditProject";
 
 export default function Projects() {
+  const { isAuthenticated } = useContext(AuthContext);
   const [projects, setProjects] = useState([]);
   const [editingProjectId, setEditingProjectId] = useState(null);
 
   useEffect(() => {
-    axios
-      .get("/projects")
-      .then(response => setProjects(response.data))
-      .catch(error => console.error(error));
-  }, []);
+    if (isAuthenticated) {
+      axios
+        .get("/projects")
+        .then(response => setProjects(response.data))
+        .catch(error => console.error(error));
+    }
+  }, [isAuthenticated]);
+
+  if (!isAuthenticated) {
+    return <p>Please log in to view projects.</p>;
+  }
 
   function handleNewProject(newProject) {
     setProjects([...projects, newProject]);
@@ -58,7 +66,10 @@ export default function Projects() {
             <>
               <h3>{project.title}</h3>
               <p>{project.description}</p>
-              <p>{project.status}</p>
+              <p>
+                <b>Status:</b>
+                {project.status}
+              </p>
               <EditProject
                 projectId={project.id}
                 initialValues={project}
@@ -70,7 +81,9 @@ export default function Projects() {
             <>
               <h3>{project.title}</h3>
               <p>{project.description}</p>
-              <p>{project.status}</p>
+              <p>
+                <b>Status:</b> {project.status}
+              </p>
               <button onClick={() => handleEditProject(project.id)}>
                 Edit
               </button>
