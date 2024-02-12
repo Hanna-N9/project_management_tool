@@ -23,7 +23,7 @@ export default function TaskForm({ onCreate }) {
     event.preventDefault();
 
     const data = {
-      project_id: projectId, // Use the state variable projectId
+      project_id: projectId,
       title,
       description,
       priority,
@@ -39,7 +39,7 @@ export default function TaskForm({ onCreate }) {
         setDescription("");
         setPriority("");
         setStatus("Not Started");
-        setProjectId(""); // Reset the selected project ID after submission
+        setProjectId("");
         setSelectedProject(null);
       })
       .catch(error => console.error(error));
