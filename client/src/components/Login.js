@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useAuth } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,8 @@ export default function Login() {
     username: "",
     password: "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
+
   const { setIsAuthenticated, setCurrentUser } = useAuth();
   const navigate = useNavigate();
 
@@ -21,16 +23,22 @@ export default function Login() {
       .post("/login", credentials)
       .then(response => {
         if (response.data.error) {
-          console.error(response.data.error);
+          setErrorMessage("Invalid Username or Password, Please try again.");
         } else {
           console.log("Logged in successfully");
-          setIsAuthenticated(true); // Only set isAuthenticated to true once after a successful login
-          setCurrentUser(response.data); // Update user in the AuthContext
-          navigate("/user"); // Redirect to user profile
+          setIsAuthenticated(true);
+          setCurrentUser(response.data);
+          navigate("/user");
         }
       })
       .catch(error => {
-        console.error("Network error", error);
+        // If the error is due to incorrect credentials, display the custom message
+        if (error.response && error.response.data.error) {
+          setErrorMessage("Invalid Username or Password, Please try again.");
+        } else {
+          // For other errors, display a different message
+          setErrorMessage("An unexpected error occurred during login.");
+        }
       });
   };
 
@@ -51,6 +59,7 @@ export default function Login() {
         name="password"
       />
       <button type="submit">Login</button>
+      {errorMessage && <div className="error-message">{errorMessage}</div>}
     </form>
   );
 }
