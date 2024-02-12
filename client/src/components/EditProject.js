@@ -1,5 +1,4 @@
-// EditProject.js
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 
 export default function EditProject({
@@ -16,10 +15,10 @@ export default function EditProject({
     },
   );
 
-  const handleChange = event => {
+  const handleChange = e => {
     setProject({
       ...project,
-      [event.target.name]: event.target.value,
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -29,8 +28,8 @@ export default function EditProject({
     }
   };
 
-  const handleSubmit = event => {
-    event.preventDefault();
+  const handleSubmit = e => {
+    e.preventDefault();
     axios
       .patch(`/projects/${projectId}`, project)
       .then(response => {
@@ -50,17 +49,21 @@ export default function EditProject({
         onChange={handleChange}
         placeholder="Title"
       />
+
       <textarea
         name="description"
         value={project.description}
         onChange={handleChange}
         placeholder="Description"
       />
+
+      <label htmlFor="status">Status:</label>
       <select name="status" value={project.status} onChange={handleChange}>
         <option value="Not Started">Not Started</option>
         <option value="In Progress">In Progress</option>
         <option value="Completed">Completed</option>
       </select>
+
       <button type="submit">Save Changes</button>
       <button type="button" onClick={handleCancel}>
         Cancel

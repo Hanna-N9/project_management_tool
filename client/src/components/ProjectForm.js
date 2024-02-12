@@ -6,8 +6,8 @@ export default function ProjectForm({ onCreate }) {
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("Not Started");
 
-  const handleSubmit = event => {
-    event.preventDefault();
+  const handleSubmit = e => {
+    e.preventDefault();
 
     const data = { title, description, status };
 
@@ -36,6 +36,8 @@ export default function ProjectForm({ onCreate }) {
         value={description}
         onChange={e => setDescription(e.target.value)}
       />
+
+      <label htmlFor="status">Status:</label>
       <select value={status} onChange={e => setStatus(e.target.value)}>
         <option value="Not Started">Not Started</option>
         <option value="In Progress">In Progress</option>
