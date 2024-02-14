@@ -57,7 +57,6 @@ class SignIn(Resource):
         return {"error": "Incorrect username or password"},  401
 
 
-
 class SignOut(Resource):
     def delete(self):
         session.clear()
@@ -98,6 +97,7 @@ class Projects(Resource):
     def get(self):
         # Retrieve the user ID from the session
         user_id = session.get("user_id")
+        
         # Query projects associated with the user
         projects = Project.query.filter_by(user_id=user_id).all()
         if not projects:
@@ -173,6 +173,7 @@ class Tasks(Resource):
     def get(self):
         # Retrieve the user ID from the session
         user_id = session.get("user_id")
+        
         # Query tasks associated with the user
         tasks = Task.query.filter_by(user_id=user_id).all()
         if not tasks:
@@ -188,9 +189,15 @@ class Tasks(Resource):
             user = User.query.get(session.get("user_id"))
             if not user:
                 return make_response({"error": "User not found."},  404)
+            
+            # Assuming 'project_id' is sent from the frontend
+            project = Project.query.get(data.get("project_id"))
+            if project is None:
+                return make_response({"error": "Project not found."},  404)
 
             new_task = Task(
                 user_id=user.id,
+                project_id=project.id,
                 title=data.get("title"),               
                 description=data.get("description"),
                 priority=data.get("priority"),
@@ -249,25 +256,31 @@ class Comments(Resource):
     def get(self):
         # Retrieve the user ID from the session
         user_id = session.get("user_id")
+        
         # Query comments associated with the user
         comments = Comment.query.filter_by(user_id=user_id).all()
         if not comments:
             return make_response({"error": "No comments found."},  404)
         return make_response(jsonify([comment.to_dict() for comment in comments]),  200)
     
- 
+    
     def post(self):
         try:
             data = request.get_json()
-            user = User.query.get(session.get("user_id"))
+         
+            # Retrieve the user ID from the session
+            user_id = session.get("user_id")
+            if not user_id:
+                return make_response({"error": "User not found."},  404)
             
-            # Check if the user exists by using the user ID from the session
-            if user is None:
-                return make_response({"error": "User not found."}, 404)
+            # Assuming 'task_id' is sent from the frontend
+            task = Task.query.get(data.get("task_id"))
+            if task is None:
+                return make_response({"error": "Task not found."},   404)
             
             new_comment = Comment(
                 user_id=user_id,
-                task_id=task_id,
+                task_id=task.id, 
                 text=data.get("text"),
             )
             db.session.add(new_comment)
@@ -320,16 +333,15 @@ class CommentId(Resource):
 class UserProjects(Resource):
     def get(self):
         user = User.query.first() 
-        return [project.title for project in user.projects]  # print the titles of all projects associated with this user
+        return [project.title for project in user.projects]  
 
 class ProjectUsers(Resource):
     def get(self):
         project = Project.query.first()  
-        return [user.username for user in project.users]  # print the usernames of all users associated with this project
+        return [user.username for user in project.users]  
 
         
 
-        
         
 api.add_resource(Signup, "/sign_up")
 api.add_resource(SignIn, "/login")
