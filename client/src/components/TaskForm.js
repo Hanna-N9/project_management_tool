@@ -4,11 +4,12 @@ import axios from "axios";
 export default function TaskForm({ onCreate }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState("");
-  const [status, setStatus] = useState("Not Started");
+  const [priority, setPriority] = useState("Select a Priority");
+  const [status, setStatus] = useState("Select a Status");
   const [projectId, setProjectId] = useState(""); // State for project selection
   const [projects, setProjects] = useState([]); // State for projects
   const [selectedProject, setSelectedProject] = useState(null); // State for the selected project
+  const [showMessage, setShowMessage] = useState(false);
 
   useEffect(() => {
     axios
@@ -22,27 +23,40 @@ export default function TaskForm({ onCreate }) {
   const handleSubmit = event => {
     event.preventDefault();
 
-    const data = {
-      project_id: projectId,
-      title,
-      description,
-      priority,
-      status,
-    };
+    // Check if all required fields are filled
+    if (
+      !title ||
+      !description ||
+      priority === "Select a Priority" ||
+      !projectId ||
+      status === "Select a Status"
+    ) {
+      setShowMessage(true); // Show the message if any input is missing
+    } else {
+      setShowMessage(false); // Hide the message if all inputs are filled
 
-    axios
-      .post("/tasks", data)
-      .then(response => {
-        onCreate(response.data);
-        // Reset form fields
-        setTitle("");
-        setDescription("");
-        setPriority("");
-        setStatus("Not Started");
-        setProjectId("");
-        setSelectedProject(null);
-      })
-      .catch(error => console.error(error));
+      const data = {
+        project_id: projectId,
+        title,
+        description,
+        priority,
+        status,
+      };
+
+      axios
+        .post("/tasks", data)
+        .then(response => {
+          onCreate(response.data);
+          // Reset form fields
+          setTitle("");
+          setDescription("");
+          setPriority("Select a Priority");
+          setStatus("Select a Status");
+          setProjectId("");
+          setSelectedProject(null);
+        })
+        .catch(error => console.error(error));
+    }
   };
 
   return (
@@ -78,27 +92,30 @@ export default function TaskForm({ onCreate }) {
         onChange={e => setDescription(e.target.value)}
       />
 
-      <label htmlFor="priority">Priority:</label>
       <select
         id="priority"
         value={priority}
         onChange={e => setPriority(e.target.value)}>
+        <option value="Select a Priority">Select a Priority</option>
         <option value="High">High</option>
         <option value="Medium">Medium</option>
         <option value="Low">Low</option>
       </select>
 
-      <label htmlFor="status">Status:</label>
       <select
         id="status"
         value={status}
         onChange={e => setStatus(e.target.value)}>
+        <option value="Select a Status">Select a Status</option>
         <option value="Not Started">Not Started</option>
         <option value="In Progress">In Progress</option>
         <option value="Completed">Completed</option>
       </select>
 
       <button type="submit">Create Task</button>
+      {showMessage && (
+        <h2 className="fill-input">Please fill all form inputs!</h2>
+      )}
     </form>
   );
 }

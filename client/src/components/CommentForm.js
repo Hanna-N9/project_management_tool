@@ -5,6 +5,7 @@ export default function CommentForm({ onCreate }) {
   const [text, setText] = useState("");
   const [taskId, setTaskId] = useState("");
   const [tasks, setTasks] = useState([]);
+  const [showMessage, setShowMessage] = useState(false);
 
   useEffect(() => {
     axios
@@ -18,19 +19,27 @@ export default function CommentForm({ onCreate }) {
   const handleSubmit = event => {
     event.preventDefault();
 
-    const data = {
-      task_id: taskId,
-      text,
-    };
+    // Check if both required fields are filled
+    if (!text || !taskId) {
+      setShowMessage(true); // Show the message if any input is missing
+    } else {
+      setShowMessage(false); // Hide the message if all inputs are filled
 
-    axios
-      .post("/comments", data)
-      .then(response => {
-        onCreate(response.data);
-        setText("");
-        setTaskId("");
-      })
-      .catch(error => console.error(error));
+      const data = {
+        task_id: taskId,
+        text,
+      };
+
+      axios
+        .post("/comments", data)
+        .then(response => {
+          onCreate(response.data);
+          // Reset form fields
+          setText("");
+          setTaskId("");
+        })
+        .catch(error => console.error(error));
+    }
   };
 
   return (
@@ -54,6 +63,9 @@ export default function CommentForm({ onCreate }) {
       />
 
       <button type="submit">Add Comment</button>
+      {showMessage && (
+        <h2 className="fill-input">Please fill all form inputs!</h2>
+      )}
     </form>
   );
 }
