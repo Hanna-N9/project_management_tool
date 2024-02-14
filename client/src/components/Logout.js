@@ -19,5 +19,5 @@ export default function Logout() {
       .catch(error => {
         console.error("Network error", error);
       });
-  }, []);
+  }, [navigate, setCurrentUser, setIsAuthenticated]);
 }

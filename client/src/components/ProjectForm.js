@@ -1,60 +1,49 @@
-import { useState } from "react";
+import React from "react";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import axios from "axios";
 
+const validationSchema = Yup.object().shape({
+  title: Yup.string().required("Title is required"),
+  description: Yup.string().required("Description is required"),
+  status: Yup.string().required("Status is required"),
+});
+
 export default function ProjectForm({ onCreate }) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [status, setStatus] = useState("");
-  const [showMessage, setShowMessage] = useState(false);
-
-  const handleSubmit = e => {
-    e.preventDefault();
-
-    // Check if all required fields are filled
-    if (!title || !description || status === "Select a Status") {
-      // Check if all inputs are filled
-      setShowMessage(true); // Show the message if any input is missing
-    } else {
-      setShowMessage(false); // Hide the message if all inputs are filled
-
-      const data = { title, description, status };
-
-      axios
-        .post("/projects", data)
-        .then(response => {
-          onCreate(response.data);
-          setTitle("");
-          setDescription("");
-          setStatus("");
-        })
-        .catch(error => console.error(error));
-    }
-  };
-
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Title"
-        value={title}
-        onChange={e => setTitle(e.target.value)}
-      />
-      <textarea
-        placeholder="Description"
-        value={description}
-        onChange={e => setDescription(e.target.value)}
-      />
+    <Formik
+      initialValues={{ title: "", description: "", status: "" }}
+      validationSchema={validationSchema}
+      onSubmit={(values, actions) => {
+        axios
+          .post("/projects", values)
+          .then(response => {
+            onCreate(response.data);
+            actions.resetForm();
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }}>
+      {formikProps => (
+        <Form>
+          <ErrorMessage name="text" component="div" className="error-message" />
+          <Field type="text" name="title" placeholder="Title" />
 
-      <select value={status} onChange={e => setStatus(e.target.value)}>
-        <option value="Select a Status">Select a Status</option>
-        <option value="Not Started">Not Started</option>
-        <option value="In Progress">In Progress</option>
-        <option value="Completed">Completed</option>
-      </select>
-      <button type="submit">Create Project</button>
-      {showMessage && (
-        <h2 className="fill-input">Please fill all form inputs!</h2>
+          <ErrorMessage name="text" component="div" className="error-message" />
+          <Field as="textarea" name="description" placeholder="Description" />
+
+          <ErrorMessage name="text" component="div" className="error-message" />
+          <Field as="select" name="status">
+            <option value="">Select a Status</option>
+            <option value="Not Started">Not Started</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+          </Field>
+
+          <button type="submit">Create Project</button>
+        </Form>
       )}
-    </form>
+    </Formik>
   );
 }

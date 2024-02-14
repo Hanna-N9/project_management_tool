@@ -1,5 +1,11 @@
-import { useState } from "react";
+import React from "react";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import axios from "axios";
+
+const validationSchema = Yup.object().shape({
+  text: Yup.string().required("Comment is required"),
+});
 
 export default function EditComment({
   commentId,
@@ -7,54 +13,36 @@ export default function EditComment({
   onUpdate,
   onCancel,
 }) {
-  const [comment, setComment] = useState(
-    initialValues || {
-      text: "",
-    },
-  );
-
-  const handleChange = e => {
-    setComment({
-      ...comment,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleCancel = () => {
-    if (onCancel) {
-      onCancel();
-    }
-  };
-
-  const handleSubmit = e => {
-    e.preventDefault();
-    axios
-      .patch(`/comments/${commentId}`, comment)
-      .then(response => {
-        if (onUpdate) {
-          onUpdate(response.data);
-        }
-      })
-      .catch(error => console.error(error));
-  };
-
   return (
-    <form onSubmit={handleSubmit}>
-      <textarea
-        name="text"
-        value={comment.text}
-        onChange={handleChange}
-        placeholder="Text"
-      />
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={(values, actions) => {
+        axios
+          .patch(`/comments/${commentId}`, values)
+          .then(response => {
+            onUpdate(response.data);
+            actions.setSubmitting(false);
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }}>
+      {formikProps => (
+        <Form>
+          <ErrorMessage name="text" component="div" className="error-message" />
+          <Field as="textarea" name="text" placeholder="Text" />
 
-      <div className="button-group">
-        <button type="submit" className="save">
-          Save Changes
-        </button>
-        <button type="button" className="cancel" onClick={handleCancel}>
-          Cancel
-        </button>
-      </div>
-    </form>
+          <div className="button-group">
+            <button type="submit" className="save">
+              Save Changes
+            </button>
+            <button type="button" className="cancel" onClick={onCancel}>
+              Cancel
+            </button>
+          </div>
+        </Form>
+      )}
+    </Formik>
   );
 }

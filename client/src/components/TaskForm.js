@@ -1,15 +1,18 @@
 import { useState, useEffect } from "react";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import axios from "axios";
 
+const validationSchema = Yup.object().shape({
+  project_id: Yup.string().required("Project is required"),
+  title: Yup.string().required("Title is required"),
+  description: Yup.string().required("Description is required"),
+  priority: Yup.string().required("Priority is required"),
+  status: Yup.string().required("Status is required"),
+});
+
 export default function TaskForm({ onCreate }) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState("Select a Priority");
-  const [status, setStatus] = useState("Select a Status");
-  const [projectId, setProjectId] = useState(""); // State for project selection
-  const [projects, setProjects] = useState([]); // State for projects
-  const [selectedProject, setSelectedProject] = useState(null); // State for the selected project
-  const [showMessage, setShowMessage] = useState(false);
+  const [projects, setProjects] = useState([]);
 
   useEffect(() => {
     axios
@@ -20,102 +23,64 @@ export default function TaskForm({ onCreate }) {
       .catch(error => console.error(error));
   }, []);
 
-  const handleSubmit = event => {
-    event.preventDefault();
-
-    // Check if all required fields are filled
-    if (
-      !title ||
-      !description ||
-      priority === "Select a Priority" ||
-      !projectId ||
-      status === "Select a Status"
-    ) {
-      setShowMessage(true); // Show the message if any input is missing
-    } else {
-      setShowMessage(false); // Hide the message if all inputs are filled
-
-      const data = {
-        project_id: projectId,
-        title,
-        description,
-        priority,
-        status,
-      };
-
-      axios
-        .post("/tasks", data)
-        .then(response => {
-          onCreate(response.data);
-          // Reset form fields
-          setTitle("");
-          setDescription("");
-          setPriority("Select a Priority");
-          setStatus("Select a Status");
-          setProjectId("");
-          setSelectedProject(null);
-        })
-        .catch(error => console.error(error));
-    }
-  };
-
   return (
-    <form onSubmit={handleSubmit}>
-      <select
-        id="projectId"
-        value={projectId}
-        onChange={e => {
-          setProjectId(e.target.value);
-          setSelectedProject(
-            projects.find(project => project.id === e.target.value),
-          );
-        }}>
-        <option value="">Select a project</option>
-        {projects.map(project => (
-          <option key={project.id} value={project.id}>
-            {project.title}
-          </option>
-        ))}
-      </select>
-      {selectedProject && <p>Selected Project: {selectedProject.title}</p>}
+    <Formik
+      initialValues={{
+        title: "",
+        description: "",
+        priority: "",
+        status: "",
+        project_id: "",
+      }}
+      validationSchema={validationSchema}
+      onSubmit={(values, actions) => {
+        axios
+          .post("/tasks", values)
+          .then(response => {
+            onCreate(response.data);
+            actions.resetForm();
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }}>
+      {formikProps => (
+        <Form>
+          <ErrorMessage name="text" component="div" className="error-message" />
+          <Field as="select" name="project_id">
+            <option value="">Select a Project</option>
+            {projects.map(project => (
+              <option key={project.id} value={project.id}>
+                {project.title}
+              </option>
+            ))}
+          </Field>
 
-      <input
-        type="text"
-        placeholder="Title"
-        value={title}
-        onChange={e => setTitle(e.target.value)}
-      />
+          <ErrorMessage name="text" component="div" className="error-message" />
+          <Field type="text" name="title" placeholder="Title" />
 
-      <textarea
-        placeholder="Description"
-        value={description}
-        onChange={e => setDescription(e.target.value)}
-      />
+          <ErrorMessage name="text" component="div" className="error-message" />
+          <Field as="textarea" name="description" placeholder="Description" />
 
-      <select
-        id="priority"
-        value={priority}
-        onChange={e => setPriority(e.target.value)}>
-        <option value="Select a Priority">Select a Priority</option>
-        <option value="High">High</option>
-        <option value="Medium">Medium</option>
-        <option value="Low">Low</option>
-      </select>
+          <ErrorMessage name="text" component="div" className="error-message" />
+          <Field as="select" name="priority">
+            <option value="">Select a Priority</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </Field>
 
-      <select
-        id="status"
-        value={status}
-        onChange={e => setStatus(e.target.value)}>
-        <option value="Select a Status">Select a Status</option>
-        <option value="Not Started">Not Started</option>
-        <option value="In Progress">In Progress</option>
-        <option value="Completed">Completed</option>
-      </select>
+          <ErrorMessage name="text" component="div" className="error-message" />
+          <Field as="select" name="status">
+            <option value="">Select a Status</option>
+            <option value="Not Started">Not Started</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+          </Field>
 
-      <button type="submit">Create Task</button>
-      {showMessage && (
-        <h2 className="fill-input">Please fill all form inputs!</h2>
+          <button type="submit">Create Task</button>
+        </Form>
       )}
-    </form>
+    </Formik>
   );
 }
