@@ -62,8 +62,12 @@ export default function Tasks() {
           <h3>Project: {task.project ? task.project.title : ""}</h3>
           {editingTaskId === task.id ? (
             <>
-              <h3>{task.title}</h3>
-              <p>{task.description}</p>
+              <p>
+                <b>Title:</b> {task.title}
+              </p>
+              <p>
+                <b>Description:</b> {task.description}
+              </p>
               <b>Priority:</b> {task.priority}
               <p>
                 <b>Status:</b> {task.status}

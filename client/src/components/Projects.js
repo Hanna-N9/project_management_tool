@@ -65,10 +65,11 @@ export default function Projects() {
           {editingProjectId === project.id ? (
             <>
               <h3>{project.title}</h3>
-              <p>{project.description}</p>
               <p>
-                <b>Status:</b>
-                {project.status}
+                <b>Description:</b> {project.description}
+              </p>
+              <p>
+                <b>Status:</b> {project.status}
               </p>
               <EditProject
                 projectId={project.id}
@@ -80,7 +81,9 @@ export default function Projects() {
           ) : (
             <>
               <h3>{project.title}</h3>
-              <p>{project.description}</p>
+              <p>
+                <b>Description:</b> {project.description}
+              </p>
               <p>
                 <b>Status:</b> {project.status}
               </p>
