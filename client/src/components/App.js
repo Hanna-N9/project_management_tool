@@ -12,6 +12,7 @@ import Projects from "./Projects";
 import EditProject from "./EditProject";
 import Tasks from "./Tasks";
 import EditTask from "./EditTask";
+import Comments from "./Comments";
 import EditComment from "./EditComment";
 
 import "../App.css";
@@ -33,6 +34,7 @@ export default function App() {
           <Route path="/edit-project" element={<EditProject />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/edit-task" element={<EditTask />} />
+          <Route path="/comments" element={<Comments />} />
           <Route path="/edit-comment" element={<EditComment />} />
           <Route
             path="/redirect-page"
