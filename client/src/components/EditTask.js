@@ -11,8 +11,8 @@ export default function EditTask({
     initialValues || {
       title: "",
       description: "",
-      priority: "High",
-      status: "Not Started",
+      priority: "Select a Priority",
+      status: "Select a Status",
     },
   );
 
@@ -58,24 +58,28 @@ export default function EditTask({
         placeholder="Description"
       />
 
-      <label htmlFor="priority">Priority:</label>
       <select name="priority" value={task.priority} onChange={handleChange}>
+        <option value="Select a Priority">Select a Status</option>
         <option value="High">High</option>
         <option value="Medium">Medium</option>
         <option value="Low">Low</option>
       </select>
 
-      <label htmlFor="status">Status:</label>
       <select name="status" value={task.status} onChange={handleChange}>
+        <option value="Select a Status">Select a Status</option>
         <option value="Not Started">Not Started</option>
         <option value="In Progress">In Progress</option>
         <option value="Completed">Completed</option>
       </select>
 
-      <button type="submit">Save Changes</button>
-      <button type="button" onClick={handleCancel}>
-        Cancel
-      </button>
+      <div className="button-group">
+        <button type="submit" className="save">
+          Save Changes
+        </button>
+        <button type="button" className="cancel" onClick={handleCancel}>
+          Cancel
+        </button>
+      </div>
     </form>
   );
 }

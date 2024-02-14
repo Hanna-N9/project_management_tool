@@ -93,8 +93,18 @@ export default function Tasks() {
               <p>
                 <b>Status:</b> {task.status}
               </p>
-              <button onClick={() => handleEditTask(task.id)}>Edit</button>
-              <button onClick={() => handleDeleteTask(task.id)}>Delete</button>
+              <button
+                type="submit"
+                className="edit"
+                onClick={() => handleEditTask(task.id)}>
+                Edit
+              </button>
+              <button
+                type="button"
+                className="delete"
+                onClick={() => handleDeleteTask(task.id)}>
+                Delete
+              </button>
             </>
           )}
         </div>

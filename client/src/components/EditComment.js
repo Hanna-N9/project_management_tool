@@ -47,10 +47,14 @@ export default function EditComment({
         placeholder="Text"
       />
 
-      <button type="submit">Save Changes</button>
-      <button type="button" onClick={handleCancel}>
-        Cancel
-      </button>
+      <div className="button-group">
+        <button type="submit" className="save">
+          Save Changes
+        </button>
+        <button type="button" className="cancel" onClick={handleCancel}>
+          Cancel
+        </button>
+      </div>
     </form>
   );
 }

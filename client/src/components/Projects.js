@@ -87,10 +87,17 @@ export default function Projects() {
               <p>
                 <b>Status:</b> {project.status}
               </p>
-              <button onClick={() => handleEditProject(project.id)}>
+
+              <button
+                type="submit"
+                className="edit"
+                onClick={() => handleEditProject(project.id)}>
                 Edit
               </button>
-              <button onClick={() => handleDeleteProject(project.id)}>
+              <button
+                type="button"
+                className="delete"
+                onClick={() => handleDeleteProject(project.id)}>
                 Delete
               </button>
             </>

@@ -11,7 +11,7 @@ export default function EditProject({
     initialValues || {
       title: "",
       description: "",
-      status: "Not Started",
+      status: "Select a Status",
     },
   );
 
@@ -57,17 +57,21 @@ export default function EditProject({
         placeholder="Description"
       />
 
-      <label htmlFor="status">Status:</label>
       <select name="status" value={project.status} onChange={handleChange}>
+        <option value="Select a Status">Select a Status</option>
         <option value="Not Started">Not Started</option>
         <option value="In Progress">In Progress</option>
         <option value="Completed">Completed</option>
       </select>
 
-      <button type="submit">Save Changes</button>
-      <button type="button" onClick={handleCancel}>
-        Cancel
-      </button>
+      <div className="button-group">
+        <button type="submit" className="save">
+          Save Changes
+        </button>
+        <button type="button" className="cancel" onClick={handleCancel}>
+          Cancel
+        </button>
+      </div>
     </form>
   );
 }

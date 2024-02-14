@@ -81,10 +81,17 @@ export default function Comments() {
               <p>
                 <b>Comment:</b> {comment.text}
               </p>
-              <button onClick={() => handleEditComment(comment.id)}>
+
+              <button
+                type="submit"
+                className="edit"
+                onClick={() => handleEditComment(comment.id)}>
                 Edit
               </button>
-              <button onClick={() => handleDeleteComment(comment.id)}>
+              <button
+                type="button"
+                className="delete"
+                onClick={() => handleDeleteComment(comment.id)}>
                 Delete
               </button>
             </>

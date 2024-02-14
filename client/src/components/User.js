@@ -9,7 +9,7 @@ export default function User() {
   }
 
   return (
-    <div>
+    <div className="main-conten">
       <h1>Welcome {user.username}!</h1>
       <p>Feel free to explore the following options above.</p>
     </div>
