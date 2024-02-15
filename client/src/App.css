@@ -57,6 +57,12 @@ input[type="text"], input[type="email"], input[type="password"], select, textare
   box-sizing: border-box;
 }
 
+.button-group {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center; 
+}
+
 button {
   padding: 0.5rem 1rem;
   background-color: #3498db;
@@ -75,19 +81,34 @@ button.edit, button.delete {
   margin-bottom: 5%;
 }
 
-.button-group {
-  display: flex;
-  justify-content: space-between; 
-  align-items: center; 
+button.delete {
+  background-color: #e74c3c;
+}
+
+button.delete:hover {
+  background-color: #c0392b;
 }
 
 button.save, button.cancel{
   margin-right: 7%; 
+  margin-bottom: 7%;
 }
 
 button.cancel {
+  background-color: #808080;
   padding: 1rem;
+}
 
+button.cancel:hover {
+  background-color: #999999;
+}
+
+button.save {
+  background-color: #2ecc71;
+}
+
+button.save:hover {
+  background-color: #27ae60;
 }
 
 form {
