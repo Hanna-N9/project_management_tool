@@ -219,14 +219,16 @@ class TaskId(Resource):
             return make_response(task.to_dict(), 200)
         return make_response({"error": "Task not found."}, 404)
     
-    
+            
     def patch(self, id):
         task = Task.query.get(id)
         if not task:
             return make_response({"error": "Task not found."}, 404)
         else:
             data = request.get_json()
-            try:
+            # Delete 'project' keys if it exists
+            data.pop('project', None) #or del data['project']
+            try:    
                 for attr, value in data.items():
                     if hasattr(task, attr):
                         setattr(task, attr, value)
@@ -303,18 +305,23 @@ class CommentId(Resource):
     def patch(self, id):
         comment = Comment.query.get(id)
         if not comment:
-            return make_response({"error": "Comment not found"}, 404)
-        data = request.get_json()
-        try:
-            for attr, value in data.items():
-                if hasattr(comment, attr):
-                    setattr(comment, attr, value)
-                
-            db.session.add(comment)
-            db.session.commit()
-            return make_response(comment.to_dict(), 202)
-        except ValueError:
-            return make_response({"errors": ["validation errors"]}, 400)
+            return make_response({"error": "Comment not found."}, 404)
+        else:
+            data = request.get_json()
+            # Delete 'user' and 'task' keys if they exist
+            del data['user']
+            del data['task']
+            try:    
+                for attr, value in data.items():
+                    if hasattr(comment, attr):
+                        setattr(comment, attr, value)
+
+                db.session.add(comment)
+                db.session.commit()
+
+                return make_response(comment.to_dict(), 202)
+            except ValueError as e:
+                return make_response({"error": e.__str__()}, 400)
             
             
     def delete(self, id):
