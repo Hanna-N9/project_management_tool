@@ -28,7 +28,7 @@ class User(db.Model, SerializerMixin):
     comment_texts = association_proxy("comments", "text")
     
     # Serialization rules
-    serialize_rules = ("-password_hash", "-projects", "-comments")
+    serialize_rules = ("-projects", "-comments", "-_password_hash")
     
     # Validation    
     @validates("username")
