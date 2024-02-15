@@ -64,7 +64,9 @@ export default function Projects() {
         <div key={project.id}>
           {editingProjectId === project.id ? (
             <>
-              <h3>{project.title}</h3>
+              <h3>
+                <b>Project:</b> {project.title}
+              </h3>
               <p>
                 <b>Description:</b> {project.description}
               </p>
@@ -80,7 +82,7 @@ export default function Projects() {
             </>
           ) : (
             <>
-              <h3>{project.title}</h3>
+              <h3>Project: {project.title}</h3>
               <p>
                 <b>Description:</b> {project.description}
               </p>
