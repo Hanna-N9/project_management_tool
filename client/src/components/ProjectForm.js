@@ -27,13 +27,25 @@ export default function ProjectForm({ onCreate }) {
       }}>
       {formikProps => (
         <Form>
-          <ErrorMessage name="text" component="div" className="error-message" />
+          <ErrorMessage
+            name="title"
+            component="div"
+            className="error-message"
+          />
           <Field type="text" name="title" placeholder="Title" />
 
-          <ErrorMessage name="text" component="div" className="error-message" />
+          <ErrorMessage
+            name="description"
+            component="div"
+            className="error-message"
+          />
           <Field as="textarea" name="description" placeholder="Description" />
 
-          <ErrorMessage name="text" component="div" className="error-message" />
+          <ErrorMessage
+            name="status"
+            component="div"
+            className="error-message"
+          />
           <Field as="select" name="status">
             <option value="">Select a Status</option>
             <option value="Not Started">Not Started</option>
