@@ -58,7 +58,7 @@ export default function CommentForm({ onCreate }) {
             placeholder="Write down your comments here..."
           />
 
-          <button type="submit">Add Comment</button>
+          <button type="submit">Create Comment</button>
         </Form>
       )}
     </Formik>
