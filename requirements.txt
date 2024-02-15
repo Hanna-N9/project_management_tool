@@ -1,0 +1,13 @@
+ipdb==0.13.9
+flask 
+flask-sqlalchemy==3.0.3
+Werkzeug==2.2.2
+flask-migrate 
+sqlalchemy-serializer
+flask-restful 
+flask-cors 
+flask-bcrypt 
+faker
+python-dotenv 
+gunicorn 
+psycopg2-binary 
