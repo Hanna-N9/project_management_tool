@@ -67,7 +67,7 @@ export default function Projects() {
               <h3>
                 <b>Project:</b> {project.title}
               </h3>
-              <p>
+              <p className="description-and-comment">
                 <b>Description:</b> {project.description}
               </p>
               <p>
@@ -83,7 +83,7 @@ export default function Projects() {
           ) : (
             <>
               <h3>Project: {project.title}</h3>
-              <p>
+              <p className="description-and-comment">
                 <b>Description:</b> {project.description}
               </p>
               <p>

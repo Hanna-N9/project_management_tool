@@ -65,7 +65,7 @@ export default function Tasks() {
               <p>
                 <b>Title:</b> {task.title}
               </p>
-              <p>
+              <p className="description-and-comment">
                 <b>Description:</b> {task.description}
               </p>
               <b>Priority:</b> {task.priority}
@@ -84,7 +84,7 @@ export default function Tasks() {
               <p>
                 <b>Title:</b> {task.title}
               </p>
-              <p>
+              <p className="description-and-comment">
                 <b>Description:</b> {task.description}
               </p>
               <p>

@@ -64,7 +64,7 @@ export default function Comments() {
           <h3>Task: {comment.task ? comment.task.title : ""}</h3>
           {editingCommentId === comment.id ? (
             <>
-              <p>
+              <p className="description-and-comment">
                 <b>Comment:</b> {comment.text}
               </p>
               <EditComment
@@ -76,7 +76,7 @@ export default function Comments() {
             </>
           ) : (
             <>
-              <p>
+              <p className="description-and-comment">
                 <b>Comment:</b> {comment.text}
               </p>
 

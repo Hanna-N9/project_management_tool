@@ -140,4 +140,12 @@ form button {
   color: white;
 }
 
+.description-and-comment {
+  max-width: 60%; 
+  margin:  0 auto;
+  margin-bottom: 2%;
+  word-wrap: break-word;
+  line-height:  1.4;
+}
+
 
