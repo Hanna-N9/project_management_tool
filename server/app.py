@@ -6,6 +6,7 @@ from flask_restful import Resource, Api
 from datetime import datetime
 from os import environ
 from dotenv import load_dotenv
+from flask import render_template
 
 # Local imports
 from config import app, db, api
@@ -18,9 +19,13 @@ app.secret_key = environ.get("SECRET_KEY")
 # Import Models 
 from models import User, Project, Task, Comment
 
-@app.route("/")
+@app.route('/')
 def index():
-    return "<h1>ProjectHub</h1>"
+    return render_template("index.html")
+
+@app.errorhandler(404)
+def not_found(e):
+    return render_template("index.html")
 
 
                             ################################# User Authentication #################################
@@ -346,6 +351,8 @@ class ProjectUsers(Resource):
     def get(self):
         project = Project.query.first()  
         return [user.username for user in project.users]  
+    
+    
 
         
 

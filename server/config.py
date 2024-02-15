@@ -9,7 +9,12 @@ from sqlalchemy import MetaData
 from flask_bcrypt import Bcrypt
 
 # Instantiate app, set attributes
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    static_url_path='',
+    static_folder='../client/build',
+    template_folder='../client/build'
+)
 
 if os.environ.get('RENDER'):
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
