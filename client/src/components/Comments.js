@@ -61,9 +61,7 @@ export default function Comments() {
     <div>
       {comments.map(comment => (
         <div key={comment.id}>
-          <p>
-            <b>Task:</b> {comment.task ? comment.task.title : ""}
-          </p>
+          <h3>Task: {comment.task ? comment.task.title : ""}</h3>
           {editingCommentId === comment.id ? (
             <>
               <p>
