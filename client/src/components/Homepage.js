@@ -5,7 +5,7 @@ export default function HomePage() {
 
   return (
     <div className="main-conten">
-      <h1>Welcome to ProjectHub</h1>
+      <h1>Welcome to ProjectHub!</h1>
       {isAuthenticated ? (
         <p>
           Please click on the navigation bar to create and save your projects!
