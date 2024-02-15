@@ -1,11 +1,6 @@
 import React from "react";
-import { Formik, Field, Form, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import { Formik, Field, Form } from "formik";
 import axios from "axios";
-
-const validationSchema = Yup.object().shape({
-  text: Yup.string().required("Comment is required"),
-});
 
 export default function EditComment({
   commentId,
@@ -16,7 +11,6 @@ export default function EditComment({
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
       onSubmit={(values, actions) => {
         axios
           .patch(`/comments/${commentId}`, values)
@@ -30,7 +24,6 @@ export default function EditComment({
       }}>
       {formikProps => (
         <Form>
-          <ErrorMessage name="text" component="div" className="error-message" />
           <Field as="textarea" name="text" placeholder="Text" />
 
           <div className="button-group">
