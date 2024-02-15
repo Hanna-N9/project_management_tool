@@ -47,6 +47,20 @@ export default function TaskForm({ onCreate }) {
       {formikProps => (
         <Form>
           <ErrorMessage
+            name="project_id"
+            component="div"
+            className="error-message"
+          />
+          <Field as="select" name="project_id">
+            <option value="">Select a project</option>
+            {projects.map(project => (
+              <option key={project.id} value={project.id}>
+                {project.title}
+              </option>
+            ))}
+          </Field>
+
+          <ErrorMessage
             name="title"
             component="div"
             className="error-message"
