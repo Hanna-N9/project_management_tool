@@ -4,16 +4,12 @@
 from flask import Flask, request, make_response, session, jsonify
 from flask_restful import Resource, Api
 from datetime import datetime
-from os import environ
-from dotenv import load_dotenv
 from flask import render_template
 
 # Local imports
 from config import app, db, api
 
-# Secret Key
-load_dotenv(".env")
-app.secret_key = environ.get("SECRET_KEY")
+
 
 
 # Import Models 
