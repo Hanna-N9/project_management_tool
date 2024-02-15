@@ -16,6 +16,7 @@ export default function EditComment({
           .then(response => {
             onUpdate(response.data);
             actions.setSubmitting(false);
+            onCancel();
           })
           .catch(error => {
             console.error(error);
