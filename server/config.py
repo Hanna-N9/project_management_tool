@@ -7,8 +7,8 @@ from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 from flask_bcrypt import Bcrypt
-from dotenv import load_dotenv
-from os import environ
+# from dotenv import load_dotenv  # For deployment use
+# from os import environ # For deployment use
 
 # Instantiate app, set attributes
 app = Flask(
@@ -17,9 +17,12 @@ app = Flask(
     static_folder='../client/build',
     template_folder='../client/build'
 )
-# Secret Key
+
+# Use if deploying 
+""" # Secret Key
 load_dotenv(".env")
-app.secret_key = environ.get("SECRET_KEY")
+app.secret_key = environ.get("SECRET_KEY") """
+
 
 if os.environ.get('RENDER'):
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
